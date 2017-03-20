@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      #map {
+        height: 400px;
+        width: 100%;
+       }
+    </style>
+  </head>
+
+
+
+<body>
+    <h3>Calculating Efficiency...</h3>
+    <div id="map"></div>
+    <table>
+ <tr>
+   <th>Port Id</th>
+   <th>Efficiency</th>
+ </tr>
+ <tr>
+   <td >Jill</td>
+   <td>Smith</td>
+   <td>50</td>
+ </tr>
+ </tr>
+</table>
+    <script>
+      var mongo = require('mongodb');
+    var assert = require('assert');
+    var MongoClient = mongo.MongoClient;
+
+   var url = 'mongodb://172.16.148.105:27017/database1';
+
+
+
+
+
+       var collection1 = db.collection('idelfuel');
+       collection1.find().toArray(function(err, items) {
+                 if (err) {
+                   reject(err);
+                 } else {
+                  var id = items.map(function(a) {return a.id;});
+
+                  for(var i = 0 ; i < items.length ; i++){
+                        collection1.update({"id" : id[i]},{$set : {"co2_emm" : co2_emm}},
+                        function(err, result){
+                     assert.equal(err, null);
+                     console.log("Added efficiency to idelfuel collection");
+                   });
+                 //}
+
+                 MongoClient.connect(url, function(err, db) {
+                   assert.equal(null, err);
+                 });
+
+                   }
+                   }
+                 });
+      </script>
+  </body>
+</html>

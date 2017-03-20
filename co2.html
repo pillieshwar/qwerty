@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      #map {
+        height: 400px;
+        width: 100%;
+       }
+    </style>
+  </head>
+
+
+
+<body>
+    <h3>My Google Maps Demo</h3>
+    <div id="map"></div>
+
+
+    <h3>My Google Maps Demo</h3>
+    <div id="map"></div>
+    <script>
+    function initMap(){
+      var mongo = require('mongodb');
+    var assert = require('assert');
+    var MongoClient = mongo.MongoClient;
+
+   var url = 'mongodb://172.16.148.105:27017/database1';
+
+   MongoClient.connect(url, (err, db) => {
+
+       assert.equal(null, err);
+       var cntr = {lat: 20.38, lng: 78};
+       var map = new google.maps.Map(document.getElementById('map'), {
+         zoom: 4,
+         center: cntr
+       });
+
+
+
+
+
+       var collection1 = db.collection('idelfuel');
+       collection1.find().toArray(function(err, items) {
+                 if (err) {
+                   reject(err);
+                 } else {
+
+                  var engine = items.map(function(a) {return a.engine;});
+                  var id = items.map(function(a) {return a.id;});
+                  var s = items.map(function(a) {return a.s;})
+                  var fact = items.map(function(a) {return a.factor;})
+
+                  for(var i = 0 ; i < items.length ; i++){
+                    console.log("check");
+                    if(engine=="diesel")
+                    {
+                        var co2_emm = s * fact;
+
+                        collection1.update({"id" : id[i]},{$set : {"co2_emm" : co2_emm}},
+                        function(err, result){
+                     assert.equal(err, null);
+                     console.log("Inserted a document into the restaurants collection.");
+                   });
+                 //}
+
+                 MongoClient.connect(url, function(err, db) {
+                   assert.equal(null, err);
+                 });
+
+                    }else
+                    if(engine=="gasoline")
+                    {
+                      var co2_emm = s * fact;
+
+                      collection1.update({"id" : id[i]},{$set : {"co2_emm" : co2_emm}},
+                        function(err, result){
+                     assert.equal(err, null);
+                     if(err)
+                    console.log(err);
+                     console.log("Inserted a document into the restaurants collection.");
+                   });
+
+                    }
+
+
+                   }
+                   }
+                 });
+
+
+
+
+
+
+       var collection = db.collection('movies');
+       collection.find().toArray(function(err, items) {
+                 if (err) {
+                   reject(err);
+                 } else {
+
+                  var n = items.map(function(a) {return a.lat;});
+                  var m = items.map(function(a) {return a.lon;});
+                  for(var i = 0 ; i < items.length ; i++){
+        var uluru = {lat: Number(n[i]), lng: Number(m[i])};
+        var image="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
+        var marker1 = new google.maps.Marker({
+          position: uluru,
+          map: map,
+          icon: image
+        });
+    }
+  }
+});
+});
+}
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key= AIzaSyBx3CowVS0ans1b7fE6JDV_tvyXB-ZgUBo &callback=initMap">
+    </script>
+  </body>
+</html>
